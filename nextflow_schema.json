@@ -77,7 +77,7 @@
                     "format": "file-path",
                     "description": "FASTA file describing the transcriptome."
                 }
-            }
+            },
             "allOf": [
                 {
                     "required": [
