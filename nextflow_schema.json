@@ -101,7 +101,7 @@
                     "default": 30
                 },
                 "drs": {
-                    "title": "Direct RNA"
+                    "title": "Direct RNA",
                     "type": "boolean",
                     "description": "“Is sample direct RNA ? ",
                     "default": true
