@@ -105,7 +105,7 @@
                 "script_dir": {
                     "type": "string",
                     "format": "path",
-                    "description": "Path to the directory nextflow needs to get files from, here it could be the repository",
+                    "description": "Path to the directory nextflow needs to get files from, here it could be the repository"
                 }
             }
         },
