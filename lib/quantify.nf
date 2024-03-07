@@ -21,8 +21,8 @@ process count_features{
     val bam_string
     val string_array 
     output:
-    val fc_string
-    val string_array
+    val fc_string, emit: fc_string
+    val string_array, emit: string_array
 
     script:
     fc_string = ""
@@ -72,8 +72,8 @@ process salmon_annotation{
         val string_array 
 
     output:
-        val string 
-        val string_array 
+        val string, emit: string
+        val string_array, emit: string_array 
 
     script:
     if (string != ""){ 
