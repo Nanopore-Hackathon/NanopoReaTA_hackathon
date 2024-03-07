@@ -26,8 +26,8 @@ process minimap_alignment{
 	val string_array
 	
     output:
-	val bam_string
-	val string_array
+	val bam_string, emit: bam_string
+	val string_array, emit: string_array
     
    
 	
@@ -158,8 +158,8 @@ process minimap_transcript_alignment{
 	val string 
 	val string_array 	
 	output:
-	val bam_string 
-	val string_array 
+	val bam_string, emit: bam_string 
+	val string_array, emit: string_array 
 	
 	script:
     println "Minimap2 Alignment started"

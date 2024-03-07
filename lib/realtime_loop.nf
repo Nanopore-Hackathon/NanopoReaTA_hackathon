@@ -47,7 +47,7 @@ process fromPath_data{
     val check
 
     output:
-    val files
+    val files, emit:files
 
 
     exec:
@@ -94,10 +94,10 @@ process data_alignment_prep{
         val files
         
         output:
-        val string
-        val string_array
-        val data_string
-        val data_seen_string
+        val string, emit: string 
+        val string_array, emit:string_array
+        val data_string, emit: data_string
+        val data_seen_string, emit: data_seen_string
     
         script:
         string = ""
@@ -346,11 +346,11 @@ process data_alignment_prep{
 
 process reawake_next_round{
     input:
-    val fc 
-    val salmon 
-    val fc_string 
-    val string_array 
-    val data_string 
+    val fc, emit: fc
+    val salmon, emit: salmon
+    val fc_string, emit:fc_string
+    val string_array, emit: string_array 
+    val data_string, emit: data_string
 
     exec:
     if (fc_string != ""){
