@@ -1,3 +1,7 @@
+# Library dependencies
+library(data.table)
+library(BiocParallel)
+library(DESeq2)
 
 args = commandArgs(trailingOnly=TRUE)
 input_metadata <- args[1]
@@ -10,37 +14,36 @@ output_file <- args[5]
 # input_metadata = path/to/metadata_file, piped in by nextflow pipeline
 metadata <- fread(input_metadata)
 
-
 if(input_gene_or_trans == "gene"){
   # fread count table: input_counttable = path/to/counttable, piped in by nextflow pipeline
-  counttable <- fread(input_counttable, data.table = F)
+  counts <- fread(input_counttable, data.table = F)
   geneNames = counts$Geneid
-  counttable$Geneid <- NULL
-  counts_numeric = sapply(counttable, as.numeric)
+  counts$Geneid <- NULL
+  counts_numeric = sapply(counts, as.numeric)
   row.names(counts_numeric) = geneNames
-  nulls = sapply(0,function(counts)rowSums(counts_numeric==counttable))
+  nulls = sapply(0,function(counts)rowSums(counts_numeric==counts))
   num_nulls = length(which(nulls[,1] == 0))
   
   # make counts global variable
-  counts$df <<- as.data.frame(counts_numeric)
+  counts <- as.data.frame(counts_numeric)
   
   } else if (input_gene_or_trans == "transcript"){
-    counttable = fread(input_counttable, data.table = T)
-    geneNames = counttable$Name
-    counttable = counttable %>% dplyr::select(-1:-4)
-    counttable = as.data.frame(counttable)
-    counts_numeric = sapply(counttable, as.numeric)
+    counts = fread(input_counttable, data.table = T)
+    geneNames = counts$Name
+    counts = counts %>% dplyr::select(-1:-4)
+    counts = as.data.frame(counts)
+    counts_numeric = sapply(counts, as.numeric)
     row.names(counts_numeric) = geneNames
-    nulls = sapply(0,function(counttable)rowSums(counts_numeric==counttable))
+    nulls = sapply(0,function(counttable)rowSums(counts_numeric==counts))
     
-    countsfile$df_trans <<- as.data.frame(counts_numeric)
+    counts <- as.data.frame(counts_numeric)
 }
 
 # threads as input parameter!
 register(MulticoreParam(input_threads))
 
 createDDS2 <- function(counts, metadata){
-  flog.info("########## Create DDS object ###########")
+  #flog.info("########## Create DDS object ###########")
   
   dds <- DESeqDataSetFromMatrix(countData = counts,
                                 colData = metadata,
@@ -52,10 +55,12 @@ createDDS2 <- function(counts, metadata){
 }
 
 run_preprocessing_dea <- function(metadata, counts, output_file){
-  flog.info("########## Differential Expression Analysis ###########")
+  #flog.info("########## Differential Expression Analysis ###########")
+  
+  metadata <- as.data.frame(metadata)
   
   # Rename metadata columns
-  colnames(metadata)[c(1,2)] <- list('Samples', 'Conditions') 
+  colnames(metadata)[c(1,2)] <- c('Samples', 'Conditions') 
   
   row.names(metadata) <- metadata$Samples
   
@@ -81,4 +86,4 @@ run_preprocessing_dea <- function(metadata, counts, output_file){
   
 }
 
-run_preprocessing_dea(input_metadata, input_counttable, output_file)
+run_preprocessing_dea(metadata, counts, output_file)
