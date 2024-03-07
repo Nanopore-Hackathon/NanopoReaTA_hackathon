@@ -21,7 +21,7 @@ process merge_fastq{
     val data_seen_string
     val string
     output:
-    val data_string
+    val data_string, emit: data_string
 
     script:
     if (string != "")
@@ -97,8 +97,8 @@ process move_transcript_files{
 	val string_array 
 
     output:
-    val bam_full_string 
-    val string_array 
+    val bam_full_string, emit: bam_full_string
+    val string_array, emit: string_array
 
     script:
     bam_full_string = ""
@@ -141,8 +141,8 @@ process merge_table_of_all_folders{
     val string_array
     
     output:
-    val fc_string
-    val string_array 
+    val fc_string, emit: fc_string
+    val string_array, emit: string_array 
  
 
     script:
@@ -174,7 +174,7 @@ process merge_salmon_annotation{
     val string_array 
     
     output:
-    val done
+    val done, emit: done
 
     script:
     println "Salmon merging all files"  
