@@ -34,7 +34,7 @@ process readlength_check{
 process infer_experiment{
     memory "4 GB"
     input:
-    val fc_string from start_infer_experiment_processes
+    val fc_string
 
     script:
     if (fc_string != "")
