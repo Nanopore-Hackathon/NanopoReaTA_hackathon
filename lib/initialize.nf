@@ -8,7 +8,7 @@ process find_data_folders(){
     input: 
 
     output:
-        val done
+        val done, emit: done
     exec:
     if (params.barcoded == 1){
         def text = new File(params.metadata).getText()
@@ -40,7 +40,7 @@ process make_directories{
     input:
     val done
     output:
-	val finished
+	val finished, emit: finished
 	
 	script:
 	string = ""
