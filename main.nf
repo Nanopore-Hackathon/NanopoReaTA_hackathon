@@ -87,12 +87,12 @@ process progressive_stats {
 ///home/charlotte/heackaton/HEK_HeLa_Experiment_folder/HEK_HeLa/20230323_1311_MN32609_FAQ51879_03abc106/fastq_pass
 //initialise workflow and hand over input
 workflow {
-	data = Channel      
+	samples = Channel      
     .watchPath('/home/charlotte/heackaton/HEK_HeLa_Experiment_folder/HEK_HeLa/20230323_1311_MN32609_FAQ51879_03abc106/fastq_pass/bar*/*.fastq.gz', 'create,modify')      
     .until { file->file.name == 'STOP.fastq.gz' }
         .map { tuple(it.parent.name, it ) }
-        .set { samples }
-         samples.view()
+
+	samples.view()
 
 
     //test_output	= Minimap(samples, params.inputfile)
