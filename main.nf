@@ -8,12 +8,19 @@ nextflow.enable.dsl = 2
 nextflow.preview.recursion=true 
 
 params.inputfile = "runMT-human_ont.mmi"
-params.fastq ="/home/charlotte/heackaton/HEK_HeLa_Experiment_folder/HEK_HeLa/20230323_1311_MN32609_FAQ51879_03abc106/fastq_pass/barcode01"
-params.outdir ="~/out_dir"
-params.gtf ="/home/charlotte/heackaton/gencode.v43.primary_assembly.annotation.chr20.gtf"
-params.threads = 8
 
 
+// seq_data_folder = "/home/charlotte/heackaton/HEK_HeLa_Experiment_folder/HEK_HeLa/20230323_1311_MN32609_FAQ51879_03abc106/fastq_pass/"
+// output_dir = "~/out_dir"
+// metadata = null
+// barcoded = null
+// genome_gtf = "/home/charlotte/heackaton/gencode.v43.primary_assembly.annotation.chr20.gtf"
+// bed_file = null
+// genome_fasta = null
+// genome_index = "runMT-human_ont.mmi"
+// transcriptome_fasta = null
+
+iclude { convert_gtf_to_df } from './lib/initialize.nf'
 
 process Minimap {
     label "wftemplate"
@@ -33,7 +40,6 @@ process Minimap {
     script:
 
     """
-	
     minimap2 --MD -ax splice -uf -k14 -t ${params.threads} ${params.inputfile} ${params.fastq} | samtools view -hbS -F 3844 | samtools sort > ${ID}.out${task.index}.bam
     """
 
@@ -75,9 +81,7 @@ process progressive_stats {
        def state = output instanceof BlankSeparatedList ? output.last() : "/home/charlotte/heackaton/Charlotte/~/out_dir/test.csv"
        def output = "feature_counts_latest_${task.index}.csv"
     """
-   
-    
-    Rscript /home/charlotte/heackaton/Charlotte/script.r "${new_input}" "${state}"
+    Rscript ${projectDir}/script.r "${new_input}" "${state}"
     mv /home/charlotte/heackaton/Charlotte/~/out_dir/feature_counts_latest.csv  merged_fc${task.index}.csv
     """
 }
@@ -87,8 +91,9 @@ process progressive_stats {
 ///home/charlotte/heackaton/HEK_HeLa_Experiment_folder/HEK_HeLa/20230323_1311_MN32609_FAQ51879_03abc106/fastq_pass
 //initialise workflow and hand over input
 workflow {
+    convert_gtf_to_df(file("${params.genome_index}"))
 	data = Channel      
-    .watchPath('/home/charlotte/heackaton/HEK_HeLa_Experiment_folder/HEK_HeLa/20230323_1311_MN32609_FAQ51879_03abc106/fastq_pass/bar*/*.fastq.gz', 'create,modify')      
+    .watchPath("${params.seq_data_folder}/*/*.fastq.gz", 'create,modify')      
     .until { file->file.name == 'STOP.fastq.gz' }
         .map { tuple(it.parent.name, it ) }
         .set { samples }
