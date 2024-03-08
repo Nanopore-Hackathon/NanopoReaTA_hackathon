@@ -20,7 +20,7 @@ params.inputfile = "runMT-human_ont.mmi"
 // genome_index = "runMT-human_ont.mmi"
 // transcriptome_fasta = null
 
-iclude { convert_gtf_to_df } from './lib/initialize.nf'
+include { convert_gtf_to_df } from './lib/initialize.nf'
 
 process Minimap {
     label "wftemplate"
