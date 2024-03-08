@@ -91,7 +91,7 @@ process progressive_stats {
 ///home/charlotte/heackaton/HEK_HeLa_Experiment_folder/HEK_HeLa/20230323_1311_MN32609_FAQ51879_03abc106/fastq_pass
 //initialise workflow and hand over input
 workflow {
-    convert_gtf_to_df(file("${params.genome_index}"))
+    convert_gtf_to_df(file("${params.genome_gtf}"))
 	data = Channel      
     .watchPath("${params.seq_data_folder}/*/*.fastq.gz", 'create,modify')      
     .until { file->file.name == 'STOP.fastq.gz' }
@@ -112,9 +112,6 @@ workflow {
     test_output.view()
 
     progressive_stats.scan(output)
-
-
-
   
 }
 //messages to display once the workflow has completed

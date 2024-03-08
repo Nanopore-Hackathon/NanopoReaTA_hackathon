@@ -161,7 +161,6 @@ import java.io.File;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 process convert_gtf_to_df{ 
-    conda "bioconda::gtfparse"
     publishDir "${params.output_dir}/"
     input:
     path genome_gtf
@@ -171,7 +170,7 @@ process convert_gtf_to_df{
 
     script:
     """
-    python ${projectDir}/bin/convert_gtf_to_df.py -i genome_gtf -o converted_gtf.csv
+    python ${projectDir}/bin/convert_gtf_to_df.py -i ${genome_gtf} -o converted_gtf.csv
     """
 }
 
